@@ -22,16 +22,7 @@ type User struct {
 func main() {
 	if len(os.Args) > 1 {
 		for _, fileName := range os.Args[1:] {
-			reader, err := os.Open(fileName)
-			if err != nil {
-				fmt.Fprintf(os.Stderr, "can't open file %s; %v\n", fileName, err)
-				os.Exit(1)
-			}
-			err = read(reader)
-			if err != nil {
-				fmt.Fprintf(os.Stderr, "faile to get data from file %s; %v\n", fileName, err)
-				os.Exit(1)
-			}
+			readFromFile(fileName)
 		}
 		return
 	}
@@ -52,6 +43,20 @@ func main() {
 	err = read(reader)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "faile to get data; %v\n", err)
+		os.Exit(1)
+	}
+}
+
+func readFromFile(fileName string) {
+	reader, err := os.Open(fileName)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "can't open file %s; %v\n", fileName, err)
+		os.Exit(1)
+	}
+	defer reader.Close()
+	err = read(reader)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "faile to get data from file %s; %v\n", fileName, err)
 		os.Exit(1)
 	}
 }
