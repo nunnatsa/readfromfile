@@ -11,9 +11,20 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
-    - name: Build the Docker image
+    - name: quay.io login
       run: |-
         docker login -u ${{ secrets.QUAY_USER }} -p ${{ secrets.QUAY_PASS }} quay.io
+
+    - name: Build the Docker image
+      run: |-
         IMAGE_NAME="quay.io/nunnatsa/readfromfile:${GITHUB_REF##*/}"
         docker build -t "${IMAGE_NAME}" .
-        docker push "${IMAGE_NAME}"
+        echo "IMAGE_NAME=${IMAGE_NAME}" >> $GITHUB_ENV
+
+    - name: Test the Docker image
+      run: |-
+        docker run -it --rm --pull=Always -v $(pwd)/testdata:/test:Z "${{ env.IMAGE_NAME }}" /test/test1.json /test/test2.json > res.txt
+        diff testdata/expected.txt res.txt
+
+    - name: Push the Docker image
+      run: docker push "${{ env.IMAGE_NAME }}"
