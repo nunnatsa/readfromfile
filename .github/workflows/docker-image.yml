@@ -23,7 +23,7 @@ jobs:
 
     - name: Test the Docker image
       run: |-
-        docker run --rm --pull=Always -v $(pwd)/testdata:/test:Z "${{ env.IMAGE_NAME }}" /test/test1.json /test/test2.json > res.txt
+        docker run --rm -v $(pwd)/testdata:/test:Z "${{ env.IMAGE_NAME }}" /test/test1.json /test/test2.json > res.txt
         diff testdata/expected.txt res.txt
 
     - name: Push the Docker image
