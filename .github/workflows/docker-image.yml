@@ -13,7 +13,7 @@ jobs:
     - uses: actions/checkout@v3
     - name: Build the Docker image
       run: |-
-        docker login -u ${{ env.QUAY_USER }} -p ${{ QUAY_PASS }}" quay.io
+        docker login -u ${{ env.QUAY_USER }} -p ${{ env.QUAY_PASS }}" quay.io
         IMAGE_NAME="quay.io/nunnatsa/readfromfile:${GITHUB_REF##*/}"
         docker build -t "${IMAGE_NAME}" .
         docker push "${IMAGE_NAME}"
